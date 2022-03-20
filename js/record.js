@@ -23,20 +23,6 @@ let getData = () => Promise();
   });
 })();
 
-grabar.addEventListener("click", () => {
-  grabar.classList.add("d-none");
-  detener.classList.remove("d-none");
-});
-
-detener.addEventListener("click", () => {
-  detener.classList.add("d-none");
-  guardarPanel.classList.remove("d-none");
-});
-
-cancelar.addEventListener("click", () => {
-  guardarPanel.classList.add("d-none");
-});
-
 detener.addEventListener("click", async () => {
   let data = await getData();
   recordedBlob = new Blob(data, { type: "video/webm" });
@@ -44,7 +30,7 @@ detener.addEventListener("click", async () => {
   recording.src = URL.createObjectURL(recordedBlob);
 
   guardar.href = recording.src;
-  guardar.download = "RecordedVideo.webm";
+  guardar.download = `${new Date().toISOString()}.webm`;
 });
 
 guardar.addEventListener("click", () => {
@@ -53,11 +39,11 @@ guardar.addEventListener("click", () => {
 });
 
 grabar.addEventListener("click", async () => {
-  getData = startRecording(mediaStream, 1000 * 60 * 10);
+  getData = startRecording(mediaStream);
 });
 
-function startRecording(stream, lenghtMs) {
-  let recorder = new MediaRecorder(stream);
+function startRecording(stream) {
+  let recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
   let data = [];
 
   recorder.ondataavailable = (e) => data.push(e.data);
@@ -82,3 +68,18 @@ function startRecording(stream, lenghtMs) {
 function stopRecording(stream) {
   stream.getTracks().forEach((track) => track.stop());
 }
+
+// esconder botones
+grabar.addEventListener("click", () => {
+  grabar.classList.add("d-none");
+  detener.classList.remove("d-none");
+});
+
+detener.addEventListener("click", () => {
+  detener.classList.add("d-none");
+  guardarPanel.classList.remove("d-none");
+});
+
+cancelar.addEventListener("click", () => {
+  guardarPanel.classList.add("d-none");
+});
